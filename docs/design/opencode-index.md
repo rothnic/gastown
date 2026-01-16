@@ -14,7 +14,7 @@ This index provides navigation across all Opencode orchestration planning docume
 
 ### 📘 Core Planning Documents
 
-#### [Gastown Concepts: Claude Code Coupling Analysis](opencode-concept-analysis.md) ⭐ **NEW**
+#### [Gastown Concepts: Claude Code Coupling Analysis](opencode-concept-analysis.md) ⭐
 **Purpose**: Comprehensive analysis of all major Gastown concepts and their Claude Code dependencies
 
 **Use When**:
@@ -33,6 +33,28 @@ This index provides navigation across all Opencode orchestration planning docume
 - Priority List for Abstractions
 
 **Audience**: Architects, engineers, anyone needing to understand the codebase architecture
+
+---
+
+#### [Opencode Integration Architecture](opencode-integration-architecture.md) ⭐ **NEW**
+**Purpose**: Detailed Opencode-specific integration strategy leveraging plugins, SDK, tools, and agents
+
+**Use When**:
+- Implementing Opencode adapters
+- Understanding how to leverage Opencode's full capabilities
+- Designing core logic extraction
+- Planning plugin/tool development
+
+**Key Sections**:
+- Opencode Architecture Research (plugins, SDK, agents, tools)
+- Core Logic Extraction Pattern
+- Concept-by-Concept Integration (with code examples)
+- Multi-Session Orchestration
+- Configuration Management
+- Implementation Roadmap (4 phases)
+- Design Principles
+
+**Audience**: Engineers implementing Opencode integration, architects designing abstractions
 
 ---
 
@@ -140,21 +162,22 @@ This index provides navigation across all Opencode orchestration planning docume
 
 ---
 
-### 🏗️ For Architects
+**For Architects**
 
 **Start Here**:
-1. [Concept Analysis - Overview](opencode-concept-analysis.md#overview) ⭐ **NEW**
-2. [Concept Analysis - Coupling Summary](opencode-concept-analysis.md#summary-coupling-analysis) ⭐ **NEW**
-3. [Orchestration Plan - Architecture Overview](opencode-orchestration.md#architecture-overview)
-4. [Implementation Guide - Interface Definitions](opencode-implementation-guide.md#interface-definitions)
-5. [Decisions - Design Tradeoffs](opencode-decisions.md#areas-of-uncertainty-design-tradeoffs)
+1. [Concept Analysis - Overview](opencode-concept-analysis.md#overview)
+2. [Integration Architecture - Research Findings](opencode-integration-architecture.md#research-findings) ⭐ **NEW**
+3. [Integration Architecture - Integration Strategy](opencode-integration-architecture.md#integration-strategy-core-logic-extraction) ⭐ **NEW**
+4. [Concept Analysis - Coupling Summary](opencode-concept-analysis.md#summary-coupling-analysis)
+5. [Implementation Guide - Interface Definitions](opencode-implementation-guide.md#interface-definitions)
 
 **Key Questions You Can Answer**:
 - Which Gastown concepts need abstraction? (Concept Analysis)
+- How does Opencode work? Plugins, SDK, agents? (Integration Architecture - Research)
+- How to leverage Opencode features for each concept? (Integration Architecture - Concept Integration)
+- What's the core logic extraction pattern? (Integration Architecture - Principles)
 - How tightly coupled is each concept to Claude Code? (Concept Analysis)
 - What are the minimal changes needed? (Concept Analysis - Priority List)
-- How does the system fit together? (Orchestration Plan)
-- What are the key abstractions? (Implementation Guide)
 
 ---
 
@@ -260,6 +283,7 @@ This index provides navigation across all Opencode orchestration planning docume
 | Document | Status | Completeness | Next Update |
 |----------|--------|--------------|-------------|
 | [Concept Analysis](opencode-concept-analysis.md) | ✅ Complete | 100% | After adoption |
+| [Integration Architecture](opencode-integration-architecture.md) | ✅ Complete | 100% | After Phase 1 |
 | [Orchestration Plan](opencode-orchestration.md) | ✅ Complete | 100% | After experiments |
 | [Implementation Guide](opencode-implementation-guide.md) | ✅ Complete | 100% | After Phase 1 |
 | [Experiments Checklist](opencode-experiments.md) | ✅ Complete | 100% | As experiments run |

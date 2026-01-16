@@ -92,7 +92,9 @@ type Orchestrator interface {
 
 | Want to... | Read This |
 |------------|-----------|
-| Understand which concepts need changes | [Concept Analysis](opencode-concept-analysis.md) ⭐ **NEW** |
+| Understand which concepts need changes | [Concept Analysis](opencode-concept-analysis.md) |
+| Learn how Opencode works (plugins, SDK, agents) | [Integration Architecture](opencode-integration-architecture.md) ⭐ **NEW** |
+| See core logic extraction patterns | [Integration Architecture - Principles](opencode-integration-architecture.md#key-design-principles) ⭐ **NEW** |
 | See the big picture | [Orchestration Plan](opencode-orchestration.md) |
 | See code structure | [Implementation Guide](opencode-implementation-guide.md) |
 | Run experiments | [Experiments Checklist](opencode-experiments.md) |
