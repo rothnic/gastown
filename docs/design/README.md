@@ -36,16 +36,27 @@ This directory contains design documents, architectural specifications, and plan
 ### Quick Start
 - **[opencode-quickstart.md](opencode-quickstart.md)** ⭐ Start here for a one-page overview
 
-### Full Documentation
-- **[opencode-index.md](opencode-index.md)** - Navigation hub for all Opencode docs
-- **[opencode-concept-analysis.md](opencode-concept-analysis.md)** - Analysis of all Gastown concepts and Claude Code coupling
-- **[opencode-integration-architecture.md](opencode-integration-architecture.md)** ⭐ **NEW** - Leveraging Opencode's plugins, SDK, tools, and agents
-- [opencode-orchestration.md](opencode-orchestration.md) - Comprehensive architecture and strategy
-- [opencode-implementation-guide.md](opencode-implementation-guide.md) - Technical implementation details
-- [opencode-experiments.md](opencode-experiments.md) - Validation experiments checklist
-- [opencode-decisions.md](opencode-decisions.md) - Decision points and open questions
+### Opencode Integration
 
-**Status**: Integration architecture complete, ready for implementation (2026-01-16)
+**Documentation Location**: All Opencode integration documentation has been moved to [`docs/opencode/`](../opencode/)
+
+**Quick Links**:
+- **[Opencode Documentation Index](../opencode/README.md)** - Complete documentation index
+- [Quickstart Guide](../opencode/opencode-quickstart.md) - One-page summary
+- [Technical Research](../opencode/technical-research.md) ⭐ **NEW** - Deep dive into Opencode repository
+- [Concept Analysis](../opencode/opencode-concept-analysis.md) - Coupling analysis
+- [Integration Architecture](../opencode/opencode-integration-architecture.md) - Implementation strategy
+- [Experiments Checklist](../opencode/opencode-experiments.md) - Validation experiments
+
+**Key Findings**:
+- 13/23 Gastown concepts already runtime-agnostic
+- Minimal changes needed: ~200-300 LOC in 5 files
+- Session forking available via ACP `session/fork` (needs verification)
+- Configuration schema: [https://opencode.ai/config.json](https://opencode.ai/config.json)
+
+**Status**: Planning complete, ready for implementation (2026-01-16)
+
+---
 
 ## Document Types
 
