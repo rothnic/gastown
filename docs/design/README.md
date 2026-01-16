@@ -38,12 +38,13 @@ This directory contains design documents, architectural specifications, and plan
 
 ### Full Documentation
 - **[opencode-index.md](opencode-index.md)** - Navigation hub for all Opencode docs
+- **[opencode-concept-analysis.md](opencode-concept-analysis.md)** ⭐ **NEW** - Analysis of all Gastown concepts and Claude Code coupling
 - [opencode-orchestration.md](opencode-orchestration.md) - Comprehensive architecture and strategy
 - [opencode-implementation-guide.md](opencode-implementation-guide.md) - Technical implementation details
 - [opencode-experiments.md](opencode-experiments.md) - Validation experiments checklist
 - [opencode-decisions.md](opencode-decisions.md) - Decision points and open questions
 
-**Status**: Planning complete, ready for experimentation (2026-01-15)
+**Status**: Concept analysis complete, ready for implementation (2026-01-16)
 
 ## Document Types
 

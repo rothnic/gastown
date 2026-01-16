@@ -35,9 +35,25 @@ A plan to extend Gastown's orchestration capabilities to support **Opencode** as
 
 **Risk Level**: Medium (manageable with proper experimentation)
 
+## For Architects
+
+**Read First**: [Concept Analysis](opencode-concept-analysis.md) ⭐ **NEW - START HERE**
+
+**What You'll Learn**:
+- Which Gastown concepts are already runtime-agnostic (most are!)
+- Which concepts need minimal abstraction (5 manager files)
+- Coupling levels: 🟢 None (13 concepts) / 🟡 Low (2 concepts) / 🟠 Medium (4 concepts) / 🔴 High (4 concepts)
+- Priority list: Use runtime config everywhere (~200-300 LOC changes)
+
+**Then Read**:
+- [Implementation Guide](opencode-implementation-guide.md#quick-reference) - Technical specs
+- [Orchestration Plan](opencode-orchestration.md) - Overall strategy
+
+**Estimated Work**: 1-2 weeks for core implementation
+
 ## For Engineers
 
-**Read First**: [Implementation Guide](opencode-implementation-guide.md#quick-reference)
+**Read First**: [Concept Analysis - Priority List](opencode-concept-analysis.md#required-abstractions-priority-list)
 
 **What You'll Build**:
 ```
@@ -76,11 +92,12 @@ type Orchestrator interface {
 
 | Want to... | Read This |
 |------------|-----------|
-| Understand the big picture | [Orchestration Plan](opencode-orchestration.md) |
+| Understand which concepts need changes | [Concept Analysis](opencode-concept-analysis.md) ⭐ **NEW** |
+| See the big picture | [Orchestration Plan](opencode-orchestration.md) |
 | See code structure | [Implementation Guide](opencode-implementation-guide.md) |
 | Run experiments | [Experiments Checklist](opencode-experiments.md) |
 | Make decisions | [Decisions & Questions](opencode-decisions.md) |
-| Find any doc | [Index (this!)](opencode-index.md) |
+| Find any doc | [Index](opencode-index.md) |
 
 ## Next Steps
 

@@ -14,6 +14,28 @@ This index provides navigation across all Opencode orchestration planning docume
 
 ### 📘 Core Planning Documents
 
+#### [Gastown Concepts: Claude Code Coupling Analysis](opencode-concept-analysis.md) ⭐ **NEW**
+**Purpose**: Comprehensive analysis of all major Gastown concepts and their Claude Code dependencies
+
+**Use When**:
+- Understanding which concepts need abstraction
+- Identifying tight coupling to Claude Code
+- Planning minimal changes for Opencode support
+- Reviewing architecture for multi-runtime support
+
+**Key Sections**:
+- Town-Level Concepts (Mayor, Deacon, Dogs)
+- Rig-Level Concepts (Polecat, Witness, Refinery, Crew)
+- Work Tracking (Beads, Hooks, Convoys, Molecules, Formulas, Wisps)
+- Communication (Mail, Nudge, Handoff, Seance)
+- Infrastructure (Tmux, Git Worktrees, Runtime Config)
+- Coupling Analysis Summary
+- Priority List for Abstractions
+
+**Audience**: Architects, engineers, anyone needing to understand the codebase architecture
+
+---
+
 #### [Opencode Orchestration Plan](opencode-orchestration.md)
 **Purpose**: Comprehensive strategy and architecture overview
 
@@ -121,16 +143,18 @@ This index provides navigation across all Opencode orchestration planning docume
 ### 🏗️ For Architects
 
 **Start Here**:
-1. [Orchestration Plan - Architecture Overview](opencode-orchestration.md#architecture-overview)
-2. [Implementation Guide - Interface Definitions](opencode-implementation-guide.md#interface-definitions)
-3. [Decisions - Design Tradeoffs](opencode-decisions.md#areas-of-uncertainty-design-tradeoffs)
-4. [Orchestration Plan - Integration Points](opencode-orchestration.md#integration-points)
+1. [Concept Analysis - Overview](opencode-concept-analysis.md#overview) ⭐ **NEW**
+2. [Concept Analysis - Coupling Summary](opencode-concept-analysis.md#summary-coupling-analysis) ⭐ **NEW**
+3. [Orchestration Plan - Architecture Overview](opencode-orchestration.md#architecture-overview)
+4. [Implementation Guide - Interface Definitions](opencode-implementation-guide.md#interface-definitions)
+5. [Decisions - Design Tradeoffs](opencode-decisions.md#areas-of-uncertainty-design-tradeoffs)
 
 **Key Questions You Can Answer**:
-- How does the system fit together?
-- What are the key abstractions?
-- What are the integration points?
-- What are the tradeoffs?
+- Which Gastown concepts need abstraction? (Concept Analysis)
+- How tightly coupled is each concept to Claude Code? (Concept Analysis)
+- What are the minimal changes needed? (Concept Analysis - Priority List)
+- How does the system fit together? (Orchestration Plan)
+- What are the key abstractions? (Implementation Guide)
 
 ---
 
@@ -186,12 +210,13 @@ This index provides navigation across all Opencode orchestration planning docume
 
 ### 🎯 "I need to understand the big picture"
 
-1. [Orchestration Plan - Executive Summary](opencode-orchestration.md#executive-summary) (5 min)
-2. [Orchestration Plan - Architecture Overview](opencode-orchestration.md#architecture-overview) (10 min)
-3. [Orchestration Plan - Workflow Patterns](opencode-orchestration.md#workflow-patterns) (10 min)
-4. [Decisions - Known Divergences](opencode-decisions.md#known-divergences-claude-vs-opencode) (5 min)
+1. [Concept Analysis - Overview](opencode-concept-analysis.md#overview) (5 min) ⭐ **START HERE**
+2. [Concept Analysis - Summary](opencode-concept-analysis.md#summary-coupling-analysis) (10 min) ⭐
+3. [Orchestration Plan - Executive Summary](opencode-orchestration.md#executive-summary) (5 min)
+4. [Orchestration Plan - Architecture Overview](opencode-orchestration.md#architecture-overview) (10 min)
+5. [Decisions - Known Divergences](opencode-decisions.md#known-divergences-claude-vs-opencode) (5 min)
 
-**Total Time**: ~30 minutes
+**Total Time**: ~35 minutes
 
 ---
 
@@ -234,6 +259,7 @@ This index provides navigation across all Opencode orchestration planning docume
 
 | Document | Status | Completeness | Next Update |
 |----------|--------|--------------|-------------|
+| [Concept Analysis](opencode-concept-analysis.md) | ✅ Complete | 100% | After adoption |
 | [Orchestration Plan](opencode-orchestration.md) | ✅ Complete | 100% | After experiments |
 | [Implementation Guide](opencode-implementation-guide.md) | ✅ Complete | 100% | After Phase 1 |
 | [Experiments Checklist](opencode-experiments.md) | ✅ Complete | 100% | As experiments run |
