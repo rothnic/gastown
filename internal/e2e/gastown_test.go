@@ -8,12 +8,6 @@ import (
 )
 
 func TestGastown_CreateFile(t *testing.T) {
-	// Slot assignment infrastructure is now working.
-	// Remaining issue: OpenCode agent completes without executing the task.
-	// The prompt is injected but the agent doesn't act on it.
-	// TODO: Investigate OpenCode plugin prompt injection and agent behavior
-	t.Skip("Skipping: OpenCode agent completes without executing task")
-
 	for _, rt := range []string{"claude", "opencode"} {
 		t.Run(rt, func(t *testing.T) {
 			r := NewE2ERunner(t, rt)

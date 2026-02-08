@@ -58,6 +58,10 @@ type SessionStartOptions struct {
 	// Command overrides the default "claude" command.
 	Command string
 
+	// Prompt is the initial task/message to send to the agent.
+	// For non-interactive agents (e.g., opencode run), this is passed as command argument.
+	Prompt string
+
 	// Account specifies the account handle to use (overrides default).
 	Account string
 
@@ -183,7 +187,7 @@ func (m *SessionManager) Start(polecat string, opts SessionStartOptions) error {
 	// Build startup command first
 	command := opts.Command
 	if command == "" {
-		command = config.BuildPolecatStartupCommand(m.rig.Name, polecat, m.rig.Path, "")
+		command = config.BuildPolecatStartupCommand(m.rig.Name, polecat, m.rig.Path, opts.Prompt)
 	}
 	// Prepend runtime config dir env if needed
 	if runtimeConfig.Session != nil && runtimeConfig.Session.ConfigDirEnv != "" && opts.RuntimeConfigDir != "" {

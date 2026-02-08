@@ -23,27 +23,17 @@ type beadInfo struct {
 	Assignee string `json:"assignee"`
 }
 
-// verifyBeadExists checks that the bead exists using bd show.
-// Uses bd's native prefix-based routing via routes.jsonl - do NOT set BEADS_DIR
-// as that overrides routing and breaks resolution of rig-level beads.
-//
-// Uses --no-daemon with --allow-stale to avoid daemon socket timing issues
-// while still finding beads when database is out of sync with JSONL.
-// For existence checks, stale data is acceptable - we just need to know it exists.
 func verifyBeadExists(beadID string) error {
-	cmd := exec.Command("bd", "--no-daemon", "show", beadID, "--json", "--allow-stale")
-	// Run from town root so bd can find routes.jsonl for prefix-based routing.
-	// Do NOT set BEADS_DIR - that overrides routing and breaks rig bead resolution.
-	if townRoot, err := workspace.FindFromCwd(); err == nil {
-		cmd.Dir = townRoot
-	}
-	// Use Output() instead of Run() to detect bd --no-daemon exit 0 bug:
-	// when issue not found, --no-daemon exits 0 but produces empty stdout.
-	out, err := cmd.Output()
+	townRoot, err := workspace.FindFromCwd()
 	if err != nil {
-		return fmt.Errorf("bead '%s' not found (bd show failed)", beadID)
+		townRoot = ""
 	}
-	if len(out) == 0 {
+	b := beads.New(townRoot)
+	bead, err := b.Show(beadID)
+	if err != nil {
+		return fmt.Errorf("bead '%s' not found", beadID)
+	}
+	if bead == nil {
 		return fmt.Errorf("bead '%s' not found", beadID)
 	}
 	return nil

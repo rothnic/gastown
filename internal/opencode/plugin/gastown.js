@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
+const BOOT_LOG = '/tmp/gastown_plugin_boot.log';
+fs.appendFileSync(BOOT_LOG, `\n[${new Date().toISOString()}] Plugin loading: GT_ROLE=${process.env.GT_ROLE}, GASTOWN_PLUGIN_LOG=${process.env.GASTOWN_PLUGIN_LOG}\n`);
+
 export const GasTown = async (args) => {
   const { $, directory, client } = args;
   const role = (process.env.GT_ROLE || "").toLowerCase();
@@ -20,6 +23,7 @@ export const GasTown = async (args) => {
   let messageBuffers = new Map();
   let messageRoles = new Map();
   let sessionStatuses = new Map();
+  let currentMessageId = null;
   
   let lastLogBody = "";
   let repeatCount = 0;
@@ -60,13 +64,9 @@ export const GasTown = async (args) => {
     return meaningfulEvents.has(event);
   };
 
-  let lastLogBody = "";
-  let repeatCount = 0;
-  let lastLogTimestamp = Date.now();
-  let firstLogTimestamp = Date.now();
   let repeatLineWritten = false;
 
-  const log = (level, event, message, data = {}, eSessionId = sessionId) => {
+  const log = async (level, event, message, data = {}, eSessionId = sessionId) => {
     const now = Date.now();
     const roleUpper = role ? role.toUpperCase() : "UNKNOWN";
     const agentName = gtAgent !== "unknown" ? gtAgent.toUpperCase() : "";
@@ -120,6 +120,18 @@ export const GasTown = async (args) => {
       writeToFile(testLogFile, rawLogLine);
     }
     
+    if (client?.app?.log) {
+      try {
+        await client.app.log({
+          service: "gastown",
+          level: level,
+          message: `${event}: ${displayMessage}`,
+          extra: { role, rig: gtRig, agent: gtAgent, session: eSessionId, ...otherData }
+        });
+      } catch (e) {}
+    }
+    
+    // Also log to console for debugging
     if (level === 'error') {
       console.error(rawLogLine);
     } else {
@@ -133,6 +145,17 @@ export const GasTown = async (args) => {
     GT_BINARY_PATH: process.env.GT_BINARY_PATH,
     cwd: process.cwd()
   });
+
+  // Fallback: If no session events fire within 3 seconds, trigger onSessionCreated anyway
+  // This handles cases where OpenCode doesn't emit session.created/session.status events
+  if (autonomousRoles.has(role)) {
+    setTimeout(async () => {
+      if (!didInit) {
+        log('info', 'init', 'No session events received - triggering fallback initialization');
+        await onSessionCreated();
+      }
+    }, 100);
+  }
 
   const findGt = async () => {
     if (gtPath) return gtPath;
@@ -259,19 +282,6 @@ export const GasTown = async (args) => {
     await run("gt nudge deacon session-started", "Signaling work start to monitor");
     log('info', 'init', 'Setup complete - agent is now processing task');
   };
-
-  let initAttempts = 0;
-  const proactiveInit = async () => {
-    if (didInit && promptSent) return;
-    initAttempts++;
-    if (!promptSent) await injectPrompt();
-    if (!didInit && promptSent) await onSessionCreated();
-    if (!didInit || !promptSent) {
-      if (initAttempts < 100) setTimeout(proactiveInit, 500);
-    }
-  };
-
-  setTimeout(proactiveInit, 1000);
 
   return {
     tools: {

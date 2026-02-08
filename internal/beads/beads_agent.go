@@ -248,36 +248,28 @@ func (b *Beads) CreateOrReopenAgentBead(id, title string, fields *AgentFields) (
 	// Force JSONL→SQLite sync
 	_, _ = b.run("sync", "--import")
 
-	// Set the role slot if specified
-	if fields != nil && fields.RoleBead != "" {
-		var slotErr error
-		for i := 0; i < 5; i++ {
-			_, slotErr = b.run("slot", "set", id, "role", fields.RoleBead)
-			if slotErr == nil {
-				break
-			}
-			time.Sleep(100 * time.Millisecond)
+	// Use direct JSONL append to set slots (bypassing bd slot set bugs in isolated mode)
+	if fields != nil && (fields.RoleBead != "" || fields.HookBead != "") {
+		update := map[string]interface{}{
+			"id":         id,
+			"updated_at": time.Now().Format(time.RFC3339Nano),
 		}
-		if slotErr != nil {
-			fmt.Printf("Warning: could not set role slot for ID '%s': %v\n", id, slotErr)
+		if fields.RoleBead != "" {
+			update["role"] = fields.RoleBead
 		}
-	}
+		if fields.HookBead != "" {
+			update["hook"] = fields.HookBead
+		}
 
-	// Clear any existing hook slot (handles stale state from previous lifecycle)
-	b.run("slot", "clear", id, "hook")
-
-	// Set the hook slot if specified
-	if fields != nil && fields.HookBead != "" {
-		var slotErr error
-		for i := 0; i < 5; i++ {
-			_, slotErr = b.run("slot", "set", id, "hook", fields.HookBead)
-			if slotErr == nil {
-				break
+		if err := b.AppendJSONL(update); err != nil {
+			fmt.Printf("Warning: failed to append to beads.jsonl: %v\n", err)
+		} else {
+			for i := 0; i < 5; i++ {
+				if _, err := b.run("sync", "--import"); err == nil {
+					break
+				}
+				time.Sleep(100 * time.Millisecond)
 			}
-			time.Sleep(100 * time.Millisecond)
-		}
-		if slotErr != nil {
-			fmt.Printf("Warning: could not set hook slot for ID '%s': %v\n", id, slotErr)
 		}
 	}
 
@@ -296,96 +288,72 @@ func (b *Beads) CreateOrReopenAgentBead(id, title string, fields *AgentFields) (
 // Previously, this function embedded these fields in the description text,
 // which caused inconsistencies with bd slot commands (see GH #gt-9v52).
 func (b *Beads) UpdateAgentState(id string, state string, hookBead *string) error {
-	// Update agent state using bd agent state command
-	// This updates the agent_state column directly in SQLite
 	_, err := b.run("agent", "state", id, state)
 	if err != nil {
 		return fmt.Errorf("updating agent state: %w", err)
 	}
 
-	// Update hook_bead if provided
 	if hookBead != nil {
+		update := map[string]interface{}{
+			"id":         id,
+			"updated_at": time.Now().Format(time.RFC3339Nano),
+		}
 		if *hookBead != "" {
-			// Set the hook using bd slot set
-			// This updates the hook_bead column directly in SQLite
-			var err error
-			for i := 0; i < 20; i++ {
-				_, _ = b.run("show", id)
-				_, err = b.run("slot", "set", id, "hook", *hookBead)
-				if err == nil {
-					break
-				}
-				// If slot is already occupied, clear it first then retry
-				errStr := err.Error()
-				if strings.Contains(errStr, "already occupied") {
-					_, _ = b.run("slot", "clear", id, "hook")
-					_, err = b.run("slot", "set", id, "hook", *hookBead)
-					if err == nil {
-						break
-					}
-				}
-				time.Sleep(500 * time.Millisecond)
-			}
-			if err != nil {
-				return fmt.Errorf("setting hook: %w", err)
-			}
+			update["hook"] = *hookBead
 		} else {
-			// Clear the hook
-			_, err = b.run("slot", "clear", id, "hook")
-			if err != nil {
-				return fmt.Errorf("clearing hook: %w", err)
+			update["hook"] = nil
+		}
+
+		if err := b.AppendJSONL(update); err != nil {
+			return fmt.Errorf("appending hook to beads.jsonl: %w", err)
+		}
+		for i := 0; i < 5; i++ {
+			if _, err := b.run("sync", "--import"); err == nil {
+				break
 			}
+			time.Sleep(100 * time.Millisecond)
 		}
 	}
 
 	return nil
 }
 
-// SetHookBead sets the hook_bead slot on an agent bead.
-// This is a convenience wrapper that only sets the hook without changing agent_state.
-// Per gt-zecmc: agent_state ("running", "dead", "idle") is observable from tmux
-// and should not be recorded in beads ("discover, don't track" principle).
+// SetHookBead sets the hook_bead slot on an agent bead using direct JSONL append.
 func (b *Beads) SetHookBead(agentBeadID, hookBeadID string) error {
-	// Set the hook using bd slot set
-	// This updates the hook_bead column directly in SQLite
-	var err error
-	for i := 0; i < 10; i++ {
-		// Try to 'show' the bead first to ensure it's in the index
-		_, _ = b.run("show", agentBeadID)
-		_, err = b.run("slot", "set", agentBeadID, "hook", hookBeadID)
-		if err == nil {
-			return nil
-		}
+	update := map[string]interface{}{
+		"id":         agentBeadID,
+		"updated_at": time.Now().Format(time.RFC3339Nano),
+		"hook":       hookBeadID,
+	}
 
-		// If slot is already occupied, clear it first then retry
-		errStr := err.Error()
-		if strings.Contains(errStr, "already occupied") {
-			_, _ = b.run("slot", "clear", agentBeadID, "hook")
-			_, err = b.run("slot", "set", agentBeadID, "hook", hookBeadID)
-			if err == nil {
-				return nil
-			}
-		}
-
-		// Only retry on "not found" errors (race condition with creation)
-		if !strings.Contains(err.Error(), "not found") {
+	if err := b.AppendJSONL(update); err != nil {
+		return fmt.Errorf("appending hook to beads.jsonl: %w", err)
+	}
+	for i := 0; i < 5; i++ {
+		if _, err := b.run("sync", "--import"); err == nil {
 			break
 		}
-		time.Sleep(500 * time.Millisecond)
-	}
-
-	if err != nil {
-		return fmt.Errorf("setting hook: %w", err)
+		time.Sleep(100 * time.Millisecond)
 	}
 	return nil
 }
 
-// ClearHookBead clears the hook_bead slot on an agent bead.
-// Used when work is complete or unslung.
+// ClearHookBead clears the hook_bead slot on an agent bead using direct JSONL append.
 func (b *Beads) ClearHookBead(agentBeadID string) error {
-	_, err := b.run("slot", "clear", agentBeadID, "hook")
-	if err != nil {
-		return fmt.Errorf("clearing hook: %w", err)
+	update := map[string]interface{}{
+		"id":         agentBeadID,
+		"updated_at": time.Now().Format(time.RFC3339Nano),
+		"hook":       nil,
+	}
+
+	if err := b.AppendJSONL(update); err != nil {
+		return fmt.Errorf("clearing hook in beads.jsonl: %w", err)
+	}
+	for i := 0; i < 5; i++ {
+		if _, err := b.run("sync", "--import"); err == nil {
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
 	}
 	return nil
 }

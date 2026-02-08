@@ -237,6 +237,7 @@ func runSling(cmd *cobra.Command, args []string) error {
 					Create:   slingCreate,
 					HookBead: beadID, // Set atomically at spawn time
 					Agent:    slingAgent,
+					Prompt:   slingArgs,
 				}
 				spawnInfo, spawnErr := SpawnPolecatForSling(rigName, spawnOpts)
 				if spawnErr != nil {
@@ -268,6 +269,7 @@ func runSling(cmd *cobra.Command, args []string) error {
 							Create:   slingCreate,
 							HookBead: beadID,
 							Agent:    slingAgent,
+							Prompt:   slingArgs,
 						}
 						spawnInfo, spawnErr := SpawnPolecatForSling(rigName, spawnOpts)
 						if spawnErr != nil {

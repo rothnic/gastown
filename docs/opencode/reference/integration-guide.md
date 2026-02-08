@@ -169,7 +169,7 @@ session, _ := client.Session.Create(ctx, &opencode.SessionCreateParams{
 
 ## HTTP API
 
-Requires server mode: `opencode web` or `opencode serve`
+Requires server mode: `opencode serve` (Headless API).
 
 ### Endpoints
 

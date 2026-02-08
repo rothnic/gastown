@@ -38,6 +38,7 @@ type SlingSpawnOptions struct {
 	Create   bool   // Create polecat if it doesn't exist (currently always true for sling)
 	HookBead string // Bead ID to set as hook_bead at spawn time (atomic assignment)
 	Agent    string // Agent override for this spawn (e.g., "gemini", "codex", "claude-haiku")
+	Prompt   string // Initial prompt to pass to non-interactive agents as command argument
 }
 
 // SpawnPolecatForSling creates a fresh polecat and optionally starts its session.
@@ -136,7 +137,7 @@ func SpawnPolecatForSling(rigName string, opts SlingSpawnOptions) (*SpawnedPolec
 			RuntimeConfigDir: claudeConfigDir,
 		}
 		if opts.Agent != "" {
-			cmd, err := config.BuildPolecatStartupCommandWithAgentOverride(rigName, polecatName, r.Path, "", opts.Agent)
+			cmd, err := config.BuildPolecatStartupCommandWithAgentOverride(rigName, polecatName, r.Path, opts.Prompt, opts.Agent)
 			if err != nil {
 				return nil, err
 			}

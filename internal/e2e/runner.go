@@ -222,7 +222,6 @@ export TMUX_TMPDIR="%[4]s"
 echo "TMUX_TMPDIR: $TMUX_TMPDIR" >> "%[1]s"
 export TERM=dumb
 export CI=true
-export GT_ISOLATED_BEADS=1
 export GT_TOWN_ROOT="${GT_TOWN_ROOT}"
 export GASTOWN_TEST_HASH="%[5]s"
 export OPENCODE_LOG_LEVEL=debug
@@ -332,9 +331,13 @@ func (r *E2ERunner) CreateRig() {
 
 func (r *E2ERunner) CreateBead(name string, prompt string) {
 	r.t.Helper()
-	r.beadName = name
 	r.prompt = prompt
-	r.runCmd(r.rigDir, "gt", "bead", "add", name)
+	out, err := r.runCmdOutput(r.rigDir, "bd", "create", "--title="+name, "--type=task", "--silent")
+	if err != nil {
+		r.t.Fatalf("Failed to create bead: %v", err)
+	}
+	r.beadName = strings.TrimSpace(out)
+	r.t.Logf("Created bead: %s", r.beadName)
 }
 
 func (r *E2ERunner) SlingWork() {
@@ -358,6 +361,9 @@ func (r *E2ERunner) SlingWork() {
 	}
 
 	args := []string{"sling", r.beadName, r.rigName, "--agent", r.runtime}
+	if r.prompt != "" {
+		args = append(args, "--args", r.prompt)
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
@@ -368,7 +374,6 @@ func (r *E2ERunner) SlingWork() {
 
 	env := os.Environ()
 	env = append(env, "TMUX_TMPDIR="+r.tmuxDir)
-	env = append(env, "GT_ISOLATED_BEADS=1")
 	cmd.Env = env
 
 	stdout, _ := cmd.StdoutPipe()
